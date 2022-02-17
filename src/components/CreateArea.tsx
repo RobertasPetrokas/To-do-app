@@ -3,22 +3,22 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import Zoom from '@mui/material/Zoom';
 import TextField from '@mui/material/TextField';
+import { INoteContent } from "./App";
 
-function CreateArea(props : any) {
+interface ICreateAreaProps {
+    addNote: (note: INoteContent) => void;
+}
 
-    interface noteContent {
-        date : string;
-        content : string;
-    }
-    
+function CreateArea(props: ICreateAreaProps) {
+
     const [isExpanded, setExpanded] = useState(false);
 
-    const [inputText, setInputText] = useState<noteContent | null>();
+    const [inputText, setInputText] = useState<INoteContent>({ date: "", content: "" });
 
-    function handleChange(event: { target: { name: string; value: string; }; }) {
-        const {name, value} = event.target;
+    function handleChange(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
+        const { name, value } = event.target;
 
-        setInputText((prevValue: any) =>{
+        setInputText((prevValue: INoteContent) => {
             return {
                 ...prevValue,
                 [name]: value
@@ -30,8 +30,8 @@ function CreateArea(props : any) {
         event.preventDefault();
         props.addNote(inputText);
         const note = {
-            date : "",
-            content : ""
+            date: "",
+            content: ""
         };
         setInputText(note);
     }
@@ -40,39 +40,38 @@ function CreateArea(props : any) {
         setExpanded(true);
     }
 
-  return (
-    <div>
-        <form className="create-note">
-            {isExpanded && <TextField className="date"
-                                onChange={handleChange} 
-                                value={inputText?.date}
-                                defaultValue={new Date()}
-                                name="date"
-                                label="Date"
-                                type="date"
-                                InputLabelProps={{
-                                shrink: true,
-                                }}
-                            />}
-            
-        <textarea 
-        onClick={expand} 
-        onChange={handleChange} 
-        name="content" 
-        placeholder="Task description..." 
-        rows={isExpanded? 3 : 1} 
-        value={inputText?.content}/>  
+    return (
+        <div>
+            <form className="create-note">
+                {isExpanded && <TextField className="date"
+                    onChange={handleChange}
+                    value={inputText?.date}
+                    defaultValue={new Date()}
+                    name="date"
+                    label="Date"
+                    type="date"
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                />}
+                <textarea
+                    onClick={expand}
+                    onChange={handleChange}
+                    name="content"
+                    placeholder="Task description..."
+                    rows={isExpanded ? 3 : 1}
+                    value={inputText?.content} />
 
-        <Zoom in={isExpanded}>
-            
-            <Fab onClick={submitNote}>
-                <AddIcon/>
-            </Fab>
-        </Zoom>
-      </form>
-    </div>
-    
-  );
+                <Zoom in={isExpanded}>
+
+                    <Fab onClick={submitNote}>
+                        <AddIcon />
+                    </Fab>
+                </Zoom>
+            </form>
+        </div>
+
+    );
 }
 
 export default CreateArea;
